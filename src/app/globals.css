@@ -1,0 +1,46 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+  width: 100%;
+  overflow-x: hidden;
+}
+/* header {
+  height: 10%;
+  background-color: coral;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+nav {
+  max-width: 1200px;
+  width: 100%;
+  background-color: cornflowerblue;
+  height: 50%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+} */
+
+main {
+  height: 100%;
+  display: grid;
+}
+
+section {
+  background-color: aqua;
+}
+
+footer {
+  height: 10%;
+  background-color: coral;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
