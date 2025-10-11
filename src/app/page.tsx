@@ -11,12 +11,19 @@ import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import {
   AppBar,
   Badge,
+  Box,
   Button,
   Card,
+  Grid,
   IconButton,
   InputBase,
   Paper,
+  Typography,
 } from "@mui/material";
+import shopItems from "./(data)/mockData";
+import Image from "next/image";
+import ImageComp from "./(components)/ImageComp";
+
 // <type>[optional scope]: <description>
 //[optional body]
 //[optional footer(s)]
@@ -78,9 +85,12 @@ export default function Home() {
               alignItems: "center",
             }}
           >
-            <Badge badgeContent={0} color="primary">
-              <ShoppingCartIcon />
-            </Badge>
+            <Button variant="contained">
+              {" "}
+              <Badge badgeContent={0} color="primary">
+                <ShoppingCartIcon />
+              </Badge>
+            </Button>
 
             <Button
               sx={{
@@ -96,14 +106,40 @@ export default function Home() {
           </Card>
         </Card>
       </AppBar>
-      <main>
-        <section></section>
-        <section></section>
-        <section></section>
-        <section></section>
-      </main>
+      <Grid container>
+        {shopItems.map((item) => (
+          <Box key={item.id} sx={{ width: 400, padding: "20px" }}>
+            <Card
+              sx={{
+                padding: "20px",
+                gap: "10px",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+              }}
+            >
+              <ImageComp item={item} />
+              <Typography variant={"h6"}>{item.name}</Typography>
+              <Typography>{item.description}</Typography>
+              <Card
+                sx={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  boxShadow: "none",
+                  width: "100%",
+                }}
+              >
+                <Button variant="contained" color="primary">
+                  Add to Cart
+                </Button>
+                <Typography variant={"h6"}>${item.price.toFixed(2)}</Typography>
+              </Card>
+            </Card>
+          </Box>
+        ))}
+      </Grid>
       <footer>
-        <p>&copy; 2024 SHOP APP</p>
+        <p>&copy; {new Date().getFullYear()} SHOP APP</p>
       </footer>
     </>
   );
