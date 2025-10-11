@@ -23,6 +23,7 @@ import {
 import shopItems from "./(data)/mockData";
 import Image from "next/image";
 import ImageComp from "./(components)/ImageComp";
+import AddProductComp from "./(components)/AddProductComp";
 
 // <type>[optional scope]: <description>
 //[optional body]
@@ -129,9 +130,7 @@ export default function Home() {
                   width: "100%",
                 }}
               >
-                <Button variant="contained" color="primary">
-                  Add to Cart
-                </Button>
+                <AddProductComp />
                 <Typography variant={"h6"}>${item.price.toFixed(2)}</Typography>
               </Card>
             </Card>
