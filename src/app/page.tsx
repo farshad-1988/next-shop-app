@@ -24,6 +24,7 @@ import shopItems from "./(data)/mockData";
 import Image from "next/image";
 import ImageComp from "./(components)/ImageComp";
 import AddProductComp from "./(components)/AddProductComp";
+import ItemComp from "./(components)/ItemComp";
 
 // <type>[optional scope]: <description>
 //[optional body]
@@ -86,7 +87,7 @@ export default function Home() {
               alignItems: "center",
             }}
           >
-            <Button variant="contained">
+            <Button>
               {" "}
               <Badge badgeContent={0} color="primary">
                 <ShoppingCartIcon />
@@ -109,32 +110,7 @@ export default function Home() {
       </AppBar>
       <Grid container>
         {shopItems.map((item) => (
-          <Box key={item.id} sx={{ width: 400, padding: "20px" }}>
-            <Card
-              sx={{
-                padding: "20px",
-                gap: "10px",
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-              }}
-            >
-              <ImageComp item={item} />
-              <Typography variant={"h6"}>{item.name}</Typography>
-              <Typography>{item.description}</Typography>
-              <Card
-                sx={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  boxShadow: "none",
-                  width: "100%",
-                }}
-              >
-                <AddProductComp />
-                <Typography variant={"h6"}>${item.price.toFixed(2)}</Typography>
-              </Card>
-            </Card>
-          </Box>
+          <ItemComp key={item.id} item={item} />
         ))}
       </Grid>
       <footer>
