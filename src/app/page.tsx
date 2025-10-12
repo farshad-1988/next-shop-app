@@ -25,6 +25,8 @@ import Image from "next/image";
 import ImageComp from "./(components)/ImageComp";
 import AddProductComp from "./(components)/AddProductComp";
 import ItemComp from "./(components)/ItemComp";
+import { useEffect, useState } from "react";
+import { Item } from "./types.ts/types";
 
 // <type>[optional scope]: <description>
 //[optional body]
@@ -36,7 +38,16 @@ import ItemComp from "./(components)/ItemComp";
 // footers other than BREAKING CHANGE: <description> may be provided and follow a convention similar to git trailer format.
 
 export default function Home() {
-  // const HeaderBar = styled(AppBar)``;
+  const [products, setProducts] = useState<Item[]>([]);
+
+  useEffect(() => {
+    const products = async () => {
+      const res = await fetch("http://localhost:5000/api/products");
+      const data = await res.json();
+      setProducts(data);
+    };
+    products();
+  }, []);
 
   return (
     <>
@@ -109,7 +120,7 @@ export default function Home() {
         </Card>
       </AppBar>
       <Grid container>
-        {shopItems.map((item) => (
+        {products.map((item) => (
           <ItemComp key={item.id} item={item} />
         ))}
       </Grid>
