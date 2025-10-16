@@ -2,7 +2,7 @@ import { Box, Card, Typography } from "@mui/material";
 import React from "react";
 import ImageComp from "./ImageComp";
 import AddProductComp from "./AddProductComp";
-import { Item } from "../types.ts/types";
+import { Item } from "../types/types";
 
 const ItemComp = ({ item }: { item: Item }) => {
   return (
