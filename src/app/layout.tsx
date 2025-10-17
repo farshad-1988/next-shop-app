@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Roboto } from "next/font/google";
+
 //Next.js automatically handles CSS at runtime, but TypeScript complains because it doesn’t know the type.
 // create a file named global.d.ts in your project root and add accepted modules for this TS app
 // like declare module "*.css" or declare module "*.jpg" ....
@@ -7,6 +8,8 @@ import "./globals.css";
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import theme from "../theme";
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v15-appRouter";
+import Header from "./(components)/Header";
+import { Providers } from "./Providers";
 
 const roboto = Roboto({
   weight: ["300", "400", "500", "700"],
@@ -30,12 +33,19 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body className={`${roboto.variable}`}>
-        <AppRouterCacheProvider options={{ key: "css" }}>
-          <ThemeProvider theme={theme}>
-            <CssBaseline />
-            {children}
-          </ThemeProvider>
-        </AppRouterCacheProvider>
+        <Providers>
+          <AppRouterCacheProvider options={{ key: "css" }}>
+            <ThemeProvider theme={theme}>
+              <CssBaseline />
+              <Header />
+              {children}
+              {/* footer */}
+              <footer>
+                <p>&copy; {new Date().getFullYear()} SHOP APP</p>
+              </footer>
+            </ThemeProvider>
+          </AppRouterCacheProvider>
+        </Providers>
       </body>
     </html>
   );

@@ -8,15 +8,20 @@ import LoginIcon from "@mui/icons-material/Login";
 // docs/: Used to write, modify or correct documentation.
 // For example, feature/new-feature or release/version-1.0.0.
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import { AppBar, Badge, Box, Button, Card, Grid } from "@mui/material";
+import shopItems from "./(data)/mockData";
+import Image from "next/image";
+import ImageComp from "./(components)/ImageComp";
+import AddProductComp from "./(components)/AddProductComp";
+import ItemComp from "./(components)/ItemComp";
 import {
-  AppBar,
-  Badge,
-  Button,
-  Card,
-  IconButton,
-  InputBase,
-  Paper,
-} from "@mui/material";
+  QueryClient,
+  QueryClientProvider,
+  useQuery,
+} from "@tanstack/react-query";
+import { useProductsItem } from "./(store)/useProductsStore";
+import ShowItems from "./(components)/ShowItems";
+
 // <type>[optional scope]: <description>
 //[optional body]
 //[optional footer(s)]
@@ -27,84 +32,9 @@ import {
 // footers other than BREAKING CHANGE: <description> may be provided and follow a convention similar to git trailer format.
 
 export default function Home() {
-  // const HeaderBar = styled(AppBar)``;
-
   return (
     <>
-      <AppBar
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          width: "100%",
-        }}
-        position="static"
-      >
-        <Card
-          sx={{
-            display: "flex",
-            flexDirection: "row",
-            maxWidth: "1200px",
-            width: "100%",
-            justifyContent: "space-between",
-            alignItems: "center",
-            padding: "10px",
-          }}
-        >
-          <Paper
-            component="form"
-            sx={{
-              p: "2px 4px",
-              display: "flex",
-              alignItems: "center",
-              width: 300,
-            }}
-          >
-            <InputBase
-              sx={{ ml: 1, flex: 1 }}
-              placeholder="Search For Products"
-              inputProps={{ "aria-label": "search Products" }}
-            />
-            <IconButton type="button" sx={{ p: "10px" }} aria-label="search">
-              <SearchIcon />
-            </IconButton>
-          </Paper>
-          <Card
-            sx={{
-              boxShadow: "none",
-              display: "flex",
-              flexDirection: "row",
-              gap: "20px",
-              alignItems: "center",
-            }}
-          >
-            <Badge badgeContent={0} color="primary">
-              <ShoppingCartIcon />
-            </Badge>
-
-            <Button
-              sx={{
-                border: "1px solid #999",
-                display: "flex",
-                flexDirection: "row",
-                gap: "10px",
-                alignItems: "center",
-              }}
-            >
-              Login <LoginIcon />
-            </Button>
-          </Card>
-        </Card>
-      </AppBar>
-      <main>
-        <section></section>
-        <section></section>
-        <section></section>
-        <section></section>
-      </main>
-      <footer>
-        <p>&copy; 2024 SHOP APP</p>
-      </footer>
+      <ShowItems />
     </>
   );
 }
