@@ -9,6 +9,7 @@ import { CssBaseline, ThemeProvider } from "@mui/material";
 import theme from "../theme";
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v15-appRouter";
 import Header from "./(components)/Header";
+import { Providers } from "./Providers";
 
 const roboto = Roboto({
   weight: ["300", "400", "500", "700"],
@@ -32,17 +33,19 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body className={`${roboto.variable}`}>
-        <AppRouterCacheProvider options={{ key: "css" }}>
-          <ThemeProvider theme={theme}>
-            <CssBaseline />
-            <Header />
-            {children}
-            {/* footer */}
-            <footer>
-              <p>&copy; {new Date().getFullYear()} SHOP APP</p>
-            </footer>
-          </ThemeProvider>
-        </AppRouterCacheProvider>
+        <Providers>
+          <AppRouterCacheProvider options={{ key: "css" }}>
+            <ThemeProvider theme={theme}>
+              <CssBaseline />
+              <Header />
+              {children}
+              {/* footer */}
+              <footer>
+                <p>&copy; {new Date().getFullYear()} SHOP APP</p>
+              </footer>
+            </ThemeProvider>
+          </AppRouterCacheProvider>
+        </Providers>
       </body>
     </html>
   );

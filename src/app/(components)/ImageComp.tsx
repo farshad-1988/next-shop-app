@@ -1,3 +1,5 @@
+"use client";
+
 import { Card, Skeleton } from "@mui/material";
 import Image from "next/image";
 import { useState } from "react";
@@ -11,7 +13,7 @@ const ImageComp = ({ item }) => {
     <CenteredCard>
       {loading && !error ? (
         <Skeleton variant="rectangular" width={200} height={200} />
-      ) : error ? (
+      ) : error || !item.image || item.image === "" ? (
         <BrokenImageIcon color="disabled" sx={{ fontSize: "300px" }} />
       ) : (
         <Image

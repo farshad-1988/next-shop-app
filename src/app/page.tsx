@@ -32,13 +32,9 @@ import ShowItems from "./(components)/ShowItems";
 // footers other than BREAKING CHANGE: <description> may be provided and follow a convention similar to git trailer format.
 
 export default function Home() {
-  const queryClient = new QueryClient();
-
   return (
     <>
-      <QueryClientProvider client={queryClient}>
-        <ShowItems />
-      </QueryClientProvider>
+      <ShowItems />
     </>
   );
 }
