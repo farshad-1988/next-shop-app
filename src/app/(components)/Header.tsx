@@ -19,6 +19,7 @@ import { JSX, useState } from "react";
 import { usePathname } from "next/navigation";
 import { useRouter } from "next/navigation";
 import { signOut, useSession } from "next-auth/react";
+import Link from "next/link";
 
 /**
  *
@@ -31,10 +32,10 @@ import { signOut, useSession } from "next-auth/react";
 const Header = (): JSX.Element => {
   const { data: session, status } = useSession();
   const router = useRouter();
+  const pathname = usePathname();
   // const logout = () => router.push("/");
   const login = () => router.push("/auth");
   const addNewProduct = () => router.push("/admin/handleItem");
-  const pathname = usePathname();
 
   const isAdmin = pathname.startsWith("/admin");
   const { orders } = useOrdersItem();
@@ -122,25 +123,33 @@ const Header = (): JSX.Element => {
               padding: "10px",
             }}
           >
-            <Paper
-              component="form"
-              sx={{
-                p: "2px 4px",
-                display: "flex",
-                alignItems: "center",
-                width: 300,
-              }}
-            >
-              <InputBase
-                sx={{ ml: 1, flex: 1 }}
-                placeholder="Search For Products"
-                inputProps={{ "aria-label": "search Products" }}
-                onChange={searchProducts}
-              />
-              <IconButton type="button" sx={{ p: "10px" }} aria-label="search">
-                <SearchIcon />
-              </IconButton>
-            </Paper>
+            {pathname === "/" ? (
+              <Paper
+                component="form"
+                sx={{
+                  p: "2px 4px",
+                  display: "flex",
+                  alignItems: "center",
+                  width: 300,
+                }}
+              >
+                <InputBase
+                  sx={{ ml: 1, flex: 1 }}
+                  placeholder="Search For Products"
+                  inputProps={{ "aria-label": "search Products" }}
+                  onChange={searchProducts}
+                />
+                <IconButton
+                  type="button"
+                  sx={{ p: "10px" }}
+                  aria-label="search"
+                >
+                  <SearchIcon />
+                </IconButton>
+              </Paper>
+            ) : (
+              <Link href={"/"}>home</Link>
+            )}
             <Card
               sx={{
                 boxShadow: "none",
@@ -150,7 +159,7 @@ const Header = (): JSX.Element => {
                 alignItems: "center",
               }}
             >
-              <Button>
+              <Button onClick={() => router.push("/cart")}>
                 {" "}
                 <Badge badgeContent={orders.length} color="primary">
                   <ShoppingCartIcon />
