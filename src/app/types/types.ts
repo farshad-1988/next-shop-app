@@ -31,3 +31,49 @@ export type ProductsItemStore = {
   increaseProductsItem: (item: productItem) => void;
   decreaseProductsItem: (item: productItem) => void;
 };
+export type UserItemStore = {
+  // loading: boolean;
+  // error: string | null;
+  user: User;
+  setUser: (user: User) => void;
+};
+
+export enum UserRole {
+  ADMIN = "admin",
+  CUSTOMER = "customer",
+}
+
+export interface User {
+  id: string;
+  email: string;
+  name: string;
+  createdAt?: string;
+  orders: CartItems[];
+  role: UserRole;
+}
+
+export interface AuthFormData {
+  name: string;
+  email: string;
+  password: string;
+}
+
+export interface AuthRequest {
+  action: "signin" | "signup";
+  email: string;
+  password: string;
+  name?: string;
+}
+
+export interface AuthResponse {
+  success: boolean;
+  user?: User;
+  error?: string;
+}
+
+export enum SnackbarSeverityEnum {
+  Success = "success",
+  Error = "error",
+  Info = "info",
+  Warning = "warning",
+}

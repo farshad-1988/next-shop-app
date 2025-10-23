@@ -1,10 +1,25 @@
 import { Button, Typography } from "@mui/material";
-import { useState } from "react";
-import CenteredCard from "./CustomMuiComp";
+import { JSX } from "react";
+import { CenteredCard } from "./CustomMuiComp";
 import { useOrdersItem } from "../(store)/useOrdersStores";
-import { CartItems, Item } from "../types/types";
+import { Item } from "../types/types";
 import { useMutation } from "@tanstack/react-query";
-const AddProductComp = ({ item }: { item: Item }) => {
+import { useSession } from "next-auth/react";
+import { useUserStore } from "../(store)/useUserStore";
+
+/**
+ *add or remove products from user's cart
+ *
+ * @param {Object} Item
+ *
+ *
+ * @return {JSX.Element} - component for modify  number of item in the cart
+ */
+const AddProductComp = ({ item }: { item: Item }): JSX.Element => {
+  const { data: session, status } = useSession();
+  const { orders, increaseOrderedItem, decreaseOrderedItem } = useOrdersItem();
+  const { user } = useUserStore();
+  const uid = session?.user.id;
   const addProduct = useMutation({
     // mutationKey: ["products"],
     mutationFn: async (item: Item) => {
@@ -17,34 +32,28 @@ const AddProductComp = ({ item }: { item: Item }) => {
         alert("Product is out of stock");
         return;
       }
-      const resO = await fetch("http://localhost:5000/api/orders/" + item.id);
 
-      if (resO.status == 404) {
-        const res = await fetch("http://localhost:5000/api/orders", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ ...item, count: 1, id: item.id }),
-        });
-        const data = await res.json();
-        return data;
+      const id = item.id;
+      const currentCount = orders.find((ord) => ord.id === id)?.count || 0;
+      let newOrders;
+      if (currentCount === 0) {
+        newOrders = [...orders, { ...item, count: 1 }];
       } else {
-        const existingOrder = await resO.json();
-        const updatedOrder = {
-          ...existingOrder,
-          count: existingOrder.count + 1,
-        };
-        const res = await fetch("http://localhost:5000/api/orders/" + item.id, {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(updatedOrder),
-        });
-        const data = await res.json();
-        return data;
+        newOrders = orders.map((ord) =>
+          ord.id === id ? { ...ord, count: ord.count + 1 } : ord
+        );
       }
+
+      const res = await fetch(`http://localhost:5000/api/users/${uid}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ ...user, orders: newOrders }),
+      });
+
+      const data = await res.json();
+      return data;
     },
     onSuccess: () => {
       increaseItem();
@@ -56,38 +65,27 @@ const AddProductComp = ({ item }: { item: Item }) => {
 
   const decreaseProduct = useMutation({
     mutationFn: async (item: Item) => {
-      const resO = await fetch("http://localhost:5000/api/orders/" + item.id);
+      const id = item.id;
+      const currentCount = orders.find((ord) => ord.id === id)?.count || 0;
 
-      // If the product is not found in orders
-      if (resO.status === 404) {
-        alert("This item is not in your cart");
-        return;
-      }
-
-      const existingOrder = await resO.json();
-
-      if (existingOrder.count > 1) {
+      let updatedOrders;
+      if (currentCount > 1) {
         // Decrease count
-        const updatedOrder = {
-          ...existingOrder,
-          count: existingOrder.count - 1,
-        };
-        const res = await fetch("http://localhost:5000/api/orders/" + item.id, {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(updatedOrder),
-        });
-        const data = await res.json();
-        return data;
+        updatedOrders = orders.map((ord) =>
+          ord.id === id ? { ...item, count: currentCount - 1 } : ord
+        );
       } else {
-        // Remove the product entirely
-        await fetch("http://localhost:5000/api/orders/" + item.id, {
-          method: "DELETE",
-        });
-        return { deleted: true };
+        updatedOrders = orders.filter((ord) => ord.id !== id);
       }
+      const res = await fetch(`http://localhost:5000/api/users/${uid}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ ...user, orders: updatedOrders }),
+      });
+      const data = await res.json();
+      return data;
     },
     onSuccess: () => {
       decreaseItem(); // update UI store (like Zustand or context)
@@ -97,7 +95,6 @@ const AddProductComp = ({ item }: { item: Item }) => {
     },
   });
 
-  const { orders, increaseOrderedItem, decreaseOrderedItem } = useOrdersItem();
   // const [count, setCount] = useState(
   //   orders.find((ord) => ord.id === item.id)?.count || 0
   // );
@@ -110,20 +107,10 @@ const AddProductComp = ({ item }: { item: Item }) => {
     decreaseOrderedItem(item);
     // setCount(count - 1);
   };
-  console.log(orders.find((ord) => ord.id === item.id)?.count);
+
   return (
     <div>
-      {!orders.find((ord) => ord.id === item.id) ? (
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={() => {
-            addProduct.mutate(item);
-          }}
-        >
-          Add to Cart
-        </Button>
-      ) : (
+      {orders?.find((ord) => ord.id === item.id) ? (
         <CenteredCard sx={{ gap: "10px" }}>
           <Button
             sx={{ minWidth: "30px", padding: "0px" }}
@@ -149,6 +136,16 @@ const AddProductComp = ({ item }: { item: Item }) => {
             +
           </Button>
         </CenteredCard>
+      ) : (
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => {
+            addProduct.mutate(item);
+          }}
+        >
+          Add to Cart
+        </Button>
       )}
     </div>
   );

@@ -15,6 +15,11 @@ import {
 } from "@mui/material";
 import dayjs from "dayjs";
 import { use } from "react";
+import { useProductsItem } from "@/app/(store)/useProductsStore";
+import { useRouter } from "next/navigation";
+import { useSnackbar } from "@/app/SnackbarProvider";
+import { SnackbarSeverityEnum, UserRole } from "@/app/types/types";
+import { useSession } from "next-auth/react";
 
 // Type definitions
 interface Product {
@@ -61,11 +66,16 @@ export default function HandleItemPage({
 }: {
   params: Promise<{ id?: string }>;
 }) {
-  const paramsIdArray: string[] = use(params);
-  const id = paramsIdArray.id ? paramsIdArray.id[0] : "";
-
+  const { data: session } = useSession();
+  const { showSnackbar } = useSnackbar();
+  const router = useRouter();
+  const resolvedParams = use(params);
+  const id = resolvedParams.id ?? "";
+  const { increaseProductsItem } = useProductsItem();
   const addProduct = useMutation({
     mutationFn: async (data: ProductFormData) => {
+      if (!session || session.user.role !== UserRole.ADMIN)
+        throw new Error("you are not authorized");
       const endpoint = id
         ? `http://localhost:5000/api/products/${id}`
         : "http://localhost:5000/api/products";
@@ -83,14 +93,20 @@ export default function HandleItemPage({
       if (!res.ok) {
         throw new Error("Failed to save product");
       }
-
-      return res.json();
+      const addedItem = await res.json();
+      return { item: addedItem, method };
     },
-    onSuccess: () => {
-      alert("Product saved successfully");
+    onSuccess: ({ item, method }) => {
+      increaseProductsItem(item);
+      const message =
+        method === "POST"
+          ? `item ${item.name} added successfully`
+          : `you edit item ${item.name} successfully`;
+      showSnackbar(message, SnackbarSeverityEnum.Success);
+      router.push("/admin");
     },
-    onError: () => {
-      alert("Error saving product");
+    onError: (error) => {
+      showSnackbar(error.message, SnackbarSeverityEnum.Error);
     },
   });
 

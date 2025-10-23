@@ -3,10 +3,8 @@
 import {
   AppBar,
   Badge,
-  Box,
   Button,
   Card,
-  Grid,
   IconButton,
   InputBase,
   Paper,
@@ -17,14 +15,24 @@ import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import LoginIcon from "@mui/icons-material/Login";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { useProductsItem } from "../(store)/useProductsStore";
-import { useState } from "react";
+import { JSX, useState } from "react";
 import { usePathname } from "next/navigation";
 import { useRouter } from "next/navigation";
+import { signOut, useSession } from "next-auth/react";
 
-const Header = () => {
+/**
+ *
+ *
+ *
+ *
+ * @return {JSX.Element}
+ */
+
+const Header = (): JSX.Element => {
+  const { data: session, status } = useSession();
   const router = useRouter();
-  const logout = () => router.push("/");
-  const login = () => router.push("/admin");
+  // const logout = () => router.push("/");
+  const login = () => router.push("/auth");
   const addNewProduct = () => router.push("/admin/handleItem");
   const pathname = usePathname();
 
@@ -80,7 +88,7 @@ const Header = () => {
               Add New Product
             </Button>
             <Button
-              onClick={logout}
+              onClick={() => signOut()}
               sx={{
                 border: "1px solid #999",
                 display: "flex",
@@ -149,18 +157,35 @@ const Header = () => {
                 </Badge>
               </Button>
 
-              <Button
-                onClick={login}
-                sx={{
-                  border: "1px solid #999",
-                  display: "flex",
-                  flexDirection: "row",
-                  gap: "10px",
-                  alignItems: "center",
-                }}
-              >
-                Login <LoginIcon />
-              </Button>
+              {status === "loading" ? (
+                "loading"
+              ) : !session ? (
+                <Button
+                  onClick={login}
+                  sx={{
+                    border: "1px solid #999",
+                    display: "flex",
+                    flexDirection: "row",
+                    gap: "10px",
+                    alignItems: "center",
+                  }}
+                >
+                  Login <LoginIcon />
+                </Button>
+              ) : (
+                <Button
+                  onClick={() => signOut()}
+                  sx={{
+                    border: "1px solid #999",
+                    display: "flex",
+                    flexDirection: "row",
+                    gap: "10px",
+                    alignItems: "center",
+                  }}
+                >
+                  Logout <LogoutIcon />
+                </Button>
+              )}
             </Card>
           </Card>
         </AppBar>
