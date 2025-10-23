@@ -10,6 +10,8 @@ import theme from "../theme";
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v15-appRouter";
 import Header from "./(components)/Header";
 import { Providers } from "./Providers";
+import { SnackbarProvider } from "./SnackbarProvider";
+import NextSessionProvider from "./NextSessionProvider";
 
 const roboto = Roboto({
   weight: ["300", "400", "500", "700"],
@@ -20,10 +22,10 @@ const roboto = Roboto({
   variable: "--font-roboto",
 });
 
-// export const metadata: Metadata = {
-//   title: "SHOP APP",
-//   description: "a simple shop app built with nextjs15 and material ui",
-// };
+export const metadata: Metadata = {
+  title: "SHOP APP",
+  description: "a simple shop app built with nextjs15 and material ui",
+};
 
 export default async function RootLayout({
   children,
@@ -33,19 +35,23 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body className={`${roboto.variable}`}>
-        <Providers>
-          <AppRouterCacheProvider options={{ key: "css" }}>
-            <ThemeProvider theme={theme}>
-              <CssBaseline />
-              <Header />
-              {children}
-              {/* footer */}
-              <footer>
-                <p>&copy; {new Date().getFullYear()} SHOP APP</p>
-              </footer>
-            </ThemeProvider>
-          </AppRouterCacheProvider>
-        </Providers>
+        <NextSessionProvider>
+          <Providers>
+            <SnackbarProvider>
+              <AppRouterCacheProvider options={{ key: "css" }}>
+                <ThemeProvider theme={theme}>
+                  <CssBaseline />
+                  <Header />
+                  {children}
+                  {/* footer */}
+                  <footer>
+                    <p>&copy; {new Date().getFullYear()} SHOP APP</p>
+                  </footer>
+                </ThemeProvider>
+              </AppRouterCacheProvider>
+            </SnackbarProvider>
+          </Providers>
+        </NextSessionProvider>
       </body>
     </html>
   );

@@ -1,13 +1,13 @@
 import { Grid } from "@mui/material";
 import React from "react";
 import EditItemComp from "./EditItemComp";
-import { QueryClient, useQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { useProductsItem } from "@/app/(store)/useProductsStore";
 
 const EditProducts = () => {
   const { setProducts, products, setFilteredProducts } = useProductsItem();
 
-  const { data: receivedProducts, pLoading } = useQuery({
+  useQuery({
     queryKey: ["products"],
     queryFn: async () => {
       const res = await fetch("http://localhost:5000/api/products");

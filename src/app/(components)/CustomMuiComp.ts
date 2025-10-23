@@ -8,5 +8,3 @@ export const CenteredCard = styled(Card)({
   alignItems: "center",
   boxShadow: "none",
 });
-
-export default CenteredCard;

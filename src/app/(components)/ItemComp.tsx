@@ -1,10 +1,10 @@
 import { Box, Card, Typography } from "@mui/material";
-import React from "react";
+import React, { JSX } from "react";
 import ImageComp from "./ImageComp";
 import AddProductComp from "./AddProductComp";
 import { Item } from "../types/types";
 
-const ItemComp = ({ item }: { item: Item }) => {
+const ItemComp = ({ item }: { item: Item }): JSX.Element => {
   return (
     <Box key={item.id} sx={{ width: 400, padding: "20px" }}>
       <Card
