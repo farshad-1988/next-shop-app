@@ -46,7 +46,7 @@ const ShowItems = () => {
       const res = await fetch(`http://localhost:5000/api/users/${uid}`);
       const userData = await res.json();
       setUser(userData);
-      setOrders(userData.orders || []);
+      setOrders(userData.orders);
       return userData.orders;
     },
     enabled: !!uid,
