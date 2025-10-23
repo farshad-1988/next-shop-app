@@ -19,6 +19,7 @@
     "@tanstack/react-query-devtools": "^5.90.2",
     "dayjs": "^1.11.18",
     "next": "15.5.4",
+    "next-auth": "^4.24.11",
     "react": "19.1.0",
     "react-dom": "19.1.0",
     "react-hook-form-mui": "^8.0.0",
